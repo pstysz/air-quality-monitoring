@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: sensor-producer
+
+  kafka:
+    bootstrap-servers: kafka:9092
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+openaq:
+  base-url: https://api.openaq.org/v3/
+  interval-ms: 10000
+  api-key: ${OPENAQ_API_KEY}
+
+custom:
+  kafka:
+    measurements-topic: air-quality

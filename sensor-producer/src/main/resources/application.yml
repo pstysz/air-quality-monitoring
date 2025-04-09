@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: sensor-producer
+
+  kafka:
+    bootstrap-servers: kafka:9092
+
+openaq:
+  base-url: https://api.openaq.org/v3/
+  interval-ms: 10000
+  api-key: ${OPENAQ_API_KEY}
+
+custom:
+  kafka:
+    measurements-topic: air-quality

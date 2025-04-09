@@ -1,0 +1,12 @@
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/SensorProducerApplication.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/parser/JsonToMeasurementParser.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/config/OpenAqApiConfig.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/model/AirQualityMeasurement.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/parser/AirQualityParser.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/model/DataRecord.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/config/AppConfig.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/utils/Lazy.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/config/KafkaProducerConfig.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/db/DbMock.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/service/AbstractKafkaProducer.java
+/Users/pstysz/git/air-quality-monitoring/sensor-producer/src/main/java/com/pstysz/sensorproducer/service/SensorDataProducer.java
