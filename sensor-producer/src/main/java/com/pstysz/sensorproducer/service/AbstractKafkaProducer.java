@@ -1,10 +1,12 @@
 package com.pstysz.sensorproducer.service;
 
 import com.pstysz.sensorproducer.config.OpenAqApiConfig;
-import com.pstysz.sensorproducer.model.DataRecord;
-import com.pstysz.sensorproducer.parser.JsonToMeasurementParser;
+import com.pstysz.sensorproducer.parser.JsonToRecordParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.specific.SpecificRecord;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.slf4j.MDC;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,23 +14,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.UUID;
+
 @Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractKafkaProducer<T extends DataRecord> {
+public abstract class AbstractKafkaProducer<T extends SpecificRecord> {
 
-    private final JsonToMeasurementParser<T> parser;
+    private static final String TRACE_ID_HEADER = "traceId";
+    private static final String EVENT_TYPE_HEADER = "eventType";
+    private final JsonToRecordParser<T> parser;
     private final RestTemplate restTemplate;
-    private final KafkaTemplate<String, T> kafkaTemplate;
+    private final KafkaTemplate<String, SpecificRecord> kafkaTemplate;
     protected final OpenAqApiConfig config;
 
     abstract void fetchAndSend();
+
+    abstract String extractKey(T measurement);
 
     protected void process(String url) {
         ResponseEntity<String> response = fetch(url);
 
         if (isSuccessful(response)) {
             parser.parse(response.getBody()).ifPresent(measurement -> {
-                sendToKafka(config.getTopic(), measurement.kafkaKey(), measurement);
+                sendToKafka(config.getTopic(), extractKey(measurement), measurement);
             });
         }
     }
@@ -52,7 +60,16 @@ public abstract class AbstractKafkaProducer<T extends DataRecord> {
     }
 
     void sendToKafka(String topic, String key, T value) {
-        kafkaTemplate.send(topic, key, value);
-        log.info("Sent to Kafka [{}]: {}", topic, value);
+        String traceId = MDC.get(TRACE_ID_HEADER);
+        if (traceId == null) {
+            traceId = UUID.randomUUID().toString();
+        }
+
+        ProducerRecord<String, SpecificRecord> record = new ProducerRecord<>(topic, key, value);
+        record.headers().add(TRACE_ID_HEADER, traceId.getBytes());
+        record.headers().add(EVENT_TYPE_HEADER, value.getClass().getName().getBytes());
+
+        kafkaTemplate.send(record);
+        log.info("Send event {} on topic {}", value.getClass().getSimpleName(), topic);
     }
 }

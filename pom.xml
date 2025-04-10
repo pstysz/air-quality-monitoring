@@ -12,6 +12,7 @@
     <modules>
         <module>sensor-producer</module>
         <module>stream-processor</module>
+        <module>air-quality-model</module>
     </modules>
 
     <properties>

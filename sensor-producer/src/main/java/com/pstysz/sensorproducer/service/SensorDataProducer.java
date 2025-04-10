@@ -1,10 +1,11 @@
 package com.pstysz.sensorproducer.service;
 
+import com.pstysz.airquality.model.AirQualityMeasurement;
 import com.pstysz.sensorproducer.config.OpenAqApiConfig;
 import com.pstysz.sensorproducer.db.DbMock;
-import com.pstysz.sensorproducer.model.AirQualityMeasurement;
-import com.pstysz.sensorproducer.parser.JsonToMeasurementParser;
+import com.pstysz.sensorproducer.parser.JsonToRecordParser;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.specific.SpecificRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,9 @@ public class SensorDataProducer extends AbstractKafkaProducer<AirQualityMeasurem
     private final DbMock db;
 
     public SensorDataProducer(
-            JsonToMeasurementParser<AirQualityMeasurement> parser,
+            JsonToRecordParser<AirQualityMeasurement> parser,
             RestTemplate restTemplate,
-            KafkaTemplate<String, AirQualityMeasurement> kafkaTemplate,
+            KafkaTemplate<String, SpecificRecord> kafkaTemplate,
             OpenAqApiConfig config,
             DbMock db
     ) {
@@ -33,5 +34,10 @@ public class SensorDataProducer extends AbstractKafkaProducer<AirQualityMeasurem
         db.getSubscribedSensorIds().stream()
                 .map(config::sensorUrl)
                 .forEach(super::process);
+    }
+
+    @Override
+    String extractKey(AirQualityMeasurement measurement) {
+        return measurement.getSensorId();
     }
 }

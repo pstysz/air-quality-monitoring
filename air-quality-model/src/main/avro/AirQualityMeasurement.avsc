@@ -1,0 +1,39 @@
+{
+  "type": "record",
+  "namespace": "com.pstysz.airquality.model",
+  "name": "AirQualityMeasurement",
+  "fields": [
+    {
+      "name": "sensorId",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "units",
+      "type": "string"
+    },
+    {
+      "name": "displayName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "value",
+      "type": "double"
+    },
+    {
+      "name": "datetimeLast",
+      "type": "string"
+    },
+    {
+      "name": "fetchDateTime",
+      "type": "string"
+    }
+  ]
+}

@@ -2,7 +2,7 @@ package com.pstysz.sensorproducer.parser;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pstysz.sensorproducer.model.AirQualityMeasurement;
+import com.pstysz.airquality.model.AirQualityMeasurement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AirQualityParser implements JsonToMeasurementParser<AirQualityMeasurement> {
+public class AirQualityParser implements JsonToRecordParser<AirQualityMeasurement> {
 
     private final ObjectMapper objectMapper;
 
@@ -30,14 +30,14 @@ public class AirQualityParser implements JsonToMeasurementParser<AirQualityMeasu
 
             JsonNode result = results.get(0);
 
-            AirQualityMeasurement measurement = AirQualityMeasurement.builder()
-                    .sensorId(result.path("id").asText())
-                    .name(result.path("parameter").path("name").asText())
-                    .units(result.path("parameter").path("units").asText())
-                    .displayName(result.path("parameter").path("displayName").asText())
-                    .value(result.path("latest").path("value").asDouble())
-                    .datetimeLast(result.path("datetimeLast").path("utc").asText())
-                    .fetchDateTime(OffsetDateTime.now().toString())
+            AirQualityMeasurement measurement = AirQualityMeasurement.newBuilder()
+                    .setSensorId(result.path("id").asText())
+                    .setName(result.path("parameter").path("name").asText())
+                    .setUnits(result.path("parameter").path("units").asText())
+                    .setDisplayName(result.path("parameter").path("displayName").asText())
+                    .setValue(result.path("latest").path("value").asDouble())
+                    .setDatetimeLast(result.path("datetimeLast").path("utc").asText())
+                    .setFetchDateTime(OffsetDateTime.now().toString())
                     .build();
 
             return Optional.of(measurement);
