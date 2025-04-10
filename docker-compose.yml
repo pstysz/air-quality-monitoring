@@ -7,6 +7,13 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ALLOW_ANONYMOUS_LOGIN: yes
+      ZOO_4LW_COMMANDS_WHITELIST: ruok
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+    healthcheck:
+      test: echo ruok | nc 127.0.0.1 2181 || exit -1
+      interval: 3s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:7.9.0.arm64
@@ -22,9 +29,15 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list" ]
+      interval: 3s
+      timeout: 5s
+      retries: 5
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.9.0.arm64
@@ -32,11 +45,17 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
+    healthcheck:
+        test: [ "CMD", "curl", "-f", "http://localhost:8081/subjects" ]
+        interval: 3s
+        timeout: 5s
+        retries: 5
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -48,16 +67,21 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: PLAINTEXT://kafka:9092
       KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
     depends_on:
-      - kafka
-      - schema-registry
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
 
-  sensor-producer:
+  stream-producer:
     build:
-      context: ./sensor-producer
+      context: ./stream-producer
       dockerfile: Dockerfile
-    image: sensor-producer:1.0-SNAPSHOT
-    container_name: sensor-producer
+    image: stream-producer:1.0-SNAPSHOT
+    container_name: stream-producer
     environment:
       - OPENAQ_API_KEY=${OPENAQ_API_KEY}
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy

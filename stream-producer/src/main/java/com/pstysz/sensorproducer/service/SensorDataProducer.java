@@ -3,9 +3,10 @@ package com.pstysz.sensorproducer.service;
 import com.pstysz.airquality.model.AirQualityMeasurement;
 import com.pstysz.sensorproducer.config.OpenAqApiConfig;
 import com.pstysz.sensorproducer.db.DbMock;
-import com.pstysz.sensorproducer.parser.JsonToRecordParser;
+import com.pstysz.sensorproducer.parser.AirQualityDataParser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,29 +16,23 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class SensorDataProducer extends AbstractKafkaProducer<AirQualityMeasurement> {
 
-    private final DbMock db;
-
     public SensorDataProducer(
-            JsonToRecordParser<AirQualityMeasurement> parser,
+            AirQualityDataParser parser,
             RestTemplate restTemplate,
             KafkaTemplate<String, SpecificRecord> kafkaTemplate,
             OpenAqApiConfig config,
-            DbMock db
+            DbMock db,
+            @Value("${custom.kafka.measurements-topic}") String topic
     ) {
-        super(parser, restTemplate, kafkaTemplate, config);
-        this.db = db;
+        super(parser, restTemplate, kafkaTemplate, config,
+                db::getSubscribedSensorsIds,
+                config::sensorUrl,
+                AirQualityMeasurement::getSensorId,
+                topic);
     }
 
-    @Override
-    @Scheduled(fixedDelayString = "${openaq.interval-ms}")
-    public void fetchAndSend() {
-        db.getSubscribedSensorIds().stream()
-                .map(config::sensorUrl)
-                .forEach(super::process);
-    }
-
-    @Override
-    String extractKey(AirQualityMeasurement measurement) {
-        return measurement.getSensorId();
+    @Scheduled(fixedDelayString = "${openaq.sensor-data-fetch-interval-ms}")
+    public void run() {
+        fetchAndSend();
     }
 }

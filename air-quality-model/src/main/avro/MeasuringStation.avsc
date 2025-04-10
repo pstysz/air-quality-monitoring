@@ -1,0 +1,44 @@
+{
+  "type": "record",
+  "namespace": "com.pstysz.airquality.model",
+  "name": "MeasuringStation",
+  "fields": [
+    {
+      "name": "stationId",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "locality",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "countryId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "sensorIds",
+      "type": ["null", {"type": "array", "items": "string"}],
+      "default": null
+    },
+    {
+      "name": "datetimeLast",
+      "type": "string"
+    },
+    {
+      "name": "fetchDateTime",
+      "type": "string"
+    }
+  ]
+}

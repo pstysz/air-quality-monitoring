@@ -1,16 +1,18 @@
 spring:
   application:
-    name: sensor-producer
+    name: stream-producer
 
   kafka:
     bootstrap-servers: kafka:9092
 
 openaq:
   base-url: https://api.openaq.org/v3/
-  interval-ms: 10000
+  sensor-data-fetch-interval-ms: 60000 # 1m
+  station-data-fetch-interval-ms: 3600000 # 1h
   api-key: ${OPENAQ_API_KEY}
 
 custom:
   kafka:
-    measurements-topic: air-quality
+    measurements-topic: air-quality.measurements
+    stations-topic: air-quality.stations
     schema-registry: http://schema-registry:8081

@@ -22,6 +22,6 @@
 hs_err_pid*
 replay_pid*
 .env
-sensor-producer/target/
+stream-producer/target/
 air-quality-model/target/
 stream-processor/target/

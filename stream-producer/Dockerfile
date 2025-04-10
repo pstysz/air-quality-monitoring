@@ -5,6 +5,6 @@ ENV DEBUG_PORT=8123
 
 COPY utils/config-and-run.sh /config-and-run.sh
 RUN chmod +x /config-and-run.sh
-COPY ${JAR_FILE} /sensor-producer.jar
+COPY ${JAR_FILE} /stream-producer.jar
 
 CMD ["/config-and-run.sh"]

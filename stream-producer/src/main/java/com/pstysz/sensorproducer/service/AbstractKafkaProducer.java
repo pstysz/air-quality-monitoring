@@ -1,6 +1,8 @@
 package com.pstysz.sensorproducer.service;
 
 import com.pstysz.sensorproducer.config.OpenAqApiConfig;
+import com.pstysz.sensorproducer.helpers.ExtractKafkaKeyHandler;
+import com.pstysz.sensorproducer.helpers.UrlResolver;
 import com.pstysz.sensorproducer.parser.JsonToRecordParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,21 +26,28 @@ public abstract class AbstractKafkaProducer<T extends SpecificRecord> {
 
     private static final String TRACE_ID_HEADER = "traceId";
     private static final String EVENT_TYPE_HEADER = "eventType";
+
     private final JsonToRecordParser<T> parser;
     private final RestTemplate restTemplate;
     private final KafkaTemplate<String, SpecificRecord> kafkaTemplate;
     protected final OpenAqApiConfig config;
+    private final Supplier<List<String>> dbSupplier;
+    private final UrlResolver urlResolver;
+    private final ExtractKafkaKeyHandler<T> extractKeyHandler;
+    private final String topic;
 
-    abstract void fetchAndSend();
+    public void fetchAndSend() {
+        dbSupplier.get().stream()
+                .map(urlResolver::resolve)
+                .forEach(this::process);
+    }
 
-    abstract String extractKey(T measurement);
-
-    protected void process(String url) {
+    void process(String url) {
         ResponseEntity<String> response = fetch(url);
 
         if (isSuccessful(response)) {
             parser.parse(response.getBody()).ifPresent(measurement -> {
-                sendToKafka(config.getTopic(), extractKey(measurement), measurement);
+                sendToKafka(topic, extractKeyHandler.extractKey(measurement), measurement);
             });
         }
     }
