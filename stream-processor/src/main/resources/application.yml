@@ -1,3 +1,10 @@
-kafka:
-  bootstrapServers: "kafka:9092"
-  applicationId: "air-quality-streams-app"
+spring:
+  application:
+    name: stream-processor
+
+custom:
+  kafka:
+    bootstrap-servers: kafka:9092
+    measurements-topic: air-quality.measurements
+    stations-topic: air-quality.stations
+    schema-registry: http://schema-registry:8081
