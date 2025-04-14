@@ -15,24 +15,24 @@ public class KafkaTopicConfig {
     @Value("${custom.kafka.replication-factor:1}")
     private short replicationFactor;
 
-    @Value("${custom.kafka.topics.measurements}")
-    private String measurementsTopic;
+    @Value("${custom.kafka.topics.sensor-measurements}")
+    private String sensorTopic;
 
-    @Value("${custom.kafka.topics.stations}")
+    @Value("${custom.kafka.topics.measuring-stations}")
     private String stationsTopic;
 
-    @Value("${custom.kafka.topics.station-measurements}")
-    private String stationMeasurementsTopic;
+    @Value("${custom.kafka.topics.sensor-with-station-data}")
+    private String sensorWithStationDataTopic;
 
-    @Value("${custom.kafka.topics.measurement-to-station}")
-    private String measurementToStationTopic;
+    @Value("${custom.kafka.topics.sensor-to-station}")
+    private String sensorToStationTopic;
 
     public String getTopicForType(StreamType type) {
         return switch (type) {
-            case MEASUREMENT -> measurementsTopic;
+            case MEASUREMENT -> sensorTopic;
             case STATION -> stationsTopic;
-            case STATION_MEASUREMENT -> stationMeasurementsTopic;
-            case MEASUREMENT_TO_STATION -> measurementToStationTopic;
+            case SENSOR_WITH_STATION_DATA -> sensorWithStationDataTopic;
+            case SENSOR_TO_STATION -> sensorToStationTopic;
         };
     }
 }

@@ -6,8 +6,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class SensorProducerApp {
+public class StreamProducerApp {
     public static void main(String[] args) {
-        SpringApplication.run(SensorProducerApp.class, args);
+        SpringApplication.run(StreamProducerApp.class, args);
     }
 }

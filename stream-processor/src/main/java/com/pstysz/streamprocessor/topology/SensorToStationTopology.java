@@ -1,6 +1,6 @@
 package com.pstysz.streamprocessor.topology;
 
-import com.pstysz.airquality.model.MeasurementToStation;
+import com.pstysz.airquality.model.SensorToStation;
 import com.pstysz.airquality.model.MeasuringStation;
 import com.pstysz.streamprocessor.domain.AvroTopic;
 import com.pstysz.streamprocessor.domain.StreamType;
@@ -24,7 +24,7 @@ public class SensorToStationTopology {
 
     @PostConstruct
     public void build() {
-        AvroTopic<String, MeasurementToStation> sensorToStationTopic = topicsRegistry.get(StreamType.MEASUREMENT_TO_STATION);
+        AvroTopic<String, SensorToStation> sensorToStationTopic = topicsRegistry.get(StreamType.SENSOR_TO_STATION);
 
         measuringStationTable
                 .toStream()
@@ -34,7 +34,7 @@ public class SensorToStationTopology {
                 .reduce((oldValue, newValue) -> newValue, sensorToStationTopic.materialized());
     }
 
-    private Iterable<KeyValue<String, MeasurementToStation>> explodeSensorIds(String stationId, MeasuringStation station) {
+    private Iterable<KeyValue<String, SensorToStation>> explodeSensorIds(String stationId, MeasuringStation station) {
         if (station == null || station.getSensorIds() == null) {
             return List.of();
         }
@@ -42,7 +42,7 @@ public class SensorToStationTopology {
         return station.getSensorIds().stream()
                 .map(sensorId -> new KeyValue<>(
                         sensorId,
-                        MeasurementToStation.newBuilder()
+                        SensorToStation.newBuilder()
                                 .setSensorId(sensorId)
                                 .setStationId(stationId)
                                 .build()))

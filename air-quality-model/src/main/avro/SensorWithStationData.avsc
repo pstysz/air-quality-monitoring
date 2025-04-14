@@ -1,14 +1,38 @@
 {
   "type": "record",
   "namespace": "com.pstysz.airquality.model",
-  "name": "AirQualityMeasurement",
+  "name": "SensorWithStationData",
   "fields": [
     {
       "name": "sensorId",
       "type": "string"
     },
     {
-      "name": "name",
+      "name": "stationId",
+      "type": "string"
+    },
+    {
+      "name": "stationName",
+      "type": "string"
+    },
+    {
+      "name": "locality",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "countryId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "sensorName",
       "type": "string"
     },
     {
@@ -16,7 +40,7 @@
       "type": "string"
     },
     {
-      "name": "displayName",
+      "name": "sensorDisplayName",
       "type": [
         "null",
         "string"

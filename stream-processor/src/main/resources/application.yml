@@ -7,7 +7,7 @@ custom:
     bootstrap-servers: kafka:9092
     schema-registry: http://schema-registry:8081
     topics:
-      measurements: air-quality.measurements
-      stations: air-quality.stations
-      station-measurements: air-quality.station-measurements
-      measurement-to-station: air-quality.measurement-to-station
+      sensor-measurements: air-quality.sensor-measurements
+      measuring-stations: air-quality.measuring-stations
+      sensor-with-station-data: air-quality.sensor-with-station-data
+      sensor-to-station: air-quality.sensor-to-station

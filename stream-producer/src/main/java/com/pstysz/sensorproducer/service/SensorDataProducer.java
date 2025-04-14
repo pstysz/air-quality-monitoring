@@ -1,9 +1,10 @@
 package com.pstysz.sensorproducer.service;
 
-import com.pstysz.airquality.model.AirQualityMeasurement;
+import com.pstysz.airquality.model.SensorMeasurement;
+import com.pstysz.sensorproducer.config.KafkaTopicConfig;
 import com.pstysz.sensorproducer.config.OpenAqApiConfig;
 import com.pstysz.sensorproducer.db.DbMock;
-import com.pstysz.sensorproducer.parser.AirQualityDataParser;
+import com.pstysz.sensorproducer.parser.SensorDataParser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,21 +15,21 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
-public class SensorDataProducer extends AbstractKafkaProducer<AirQualityMeasurement> {
+public class SensorDataProducer extends AbstractKafkaProducer<SensorMeasurement> {
 
     public SensorDataProducer(
-            AirQualityDataParser parser,
+            SensorDataParser parser,
             RestTemplate restTemplate,
             KafkaTemplate<String, SpecificRecord> kafkaTemplate,
             OpenAqApiConfig config,
             DbMock db,
-            @Value("${custom.kafka.measurements-topic}") String topic
+            KafkaTopicConfig topicConfig
     ) {
         super(parser, restTemplate, kafkaTemplate, config,
                 db::getSubscribedSensorsIds,
                 config::sensorUrl,
-                AirQualityMeasurement::getSensorId,
-                topic);
+                SensorMeasurement::getSensorId,
+                topicConfig.getSensorTopic());
     }
 
     @Scheduled(fixedDelayString = "${openaq.sensor-data-fetch-interval-ms}")

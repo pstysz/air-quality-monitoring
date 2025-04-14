@@ -13,12 +13,6 @@ public class OpenAqApiConfig {
     @Value("${openaq.api-key}")
     private String apiKey;
 
-    @Value("${custom.kafka.measurements-topic}")
-    private String measurementsTopic;
-
-    @Value("${custom.kafka.stations-topic}")
-    private String stationsTopic;
-
     public String sensorUrl(String sensorId) {
         return baseUrl + "/sensors/" + sensorId;
     }

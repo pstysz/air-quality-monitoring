@@ -1,8 +1,8 @@
 package com.pstysz.streamprocessor.utils;
 
 
-import com.pstysz.airquality.model.AirQualityMeasurement;
-import com.pstysz.airquality.model.MeasurementToStation;
+import com.pstysz.airquality.model.SensorMeasurement;
+import com.pstysz.airquality.model.SensorToStation;
 import com.pstysz.airquality.model.MeasuringStation;
 import com.pstysz.streamprocessor.domain.AvroTopic;
 import com.pstysz.streamprocessor.domain.StreamType;
@@ -27,21 +27,27 @@ public class StreamTopologyBuilder {
     }
 
     @Bean // sensorId -> sensor info + measurement values
-    public KStream<String, AirQualityMeasurement> airQualityMeasurementsStream(TopicsRegistry topicsRegistry) {
-        AvroTopic<String, AirQualityMeasurement> topic = topicsRegistry.get(StreamType.MEASUREMENT);
+    public KStream<String, SensorMeasurement> airQualityMeasurementsStream(TopicsRegistry topicsRegistry) {
+        AvroTopic<String, SensorMeasurement> topic = topicsRegistry.get(StreamType.MEASUREMENT);
         return builder.stream(topic.getName(), topic.consumed());
     }
 
     @Bean // stationId -> station info
     public KTable<String, MeasuringStation> measuringStationTable(TopicsRegistry topicsRegistry) {
         AvroTopic<String, MeasuringStation> topic = topicsRegistry.get(StreamType.STATION);
-        return builder.table(topic.getName(), topic.consumed());
+        return builder.table(topic.getName(), topic.consumed(), topic.materialized());
+    }
+
+    @Bean // stationId -> station info
+    public GlobalKTable<String, MeasuringStation> measuringStationGlobalTable(TopicsRegistry topicsRegistry) {
+        AvroTopic<String, MeasuringStation> topic = topicsRegistry.get(StreamType.STATION);
+        return builder.globalTable(topic.getName(), topic.consumed(), topic.materialized());
     }
 
     @Bean // GlobalKTable: sensorId -> stationId
-    public GlobalKTable<String, MeasurementToStation> sensorToStationGKtable(TopicsRegistry topicsRegistry) {
-        AvroTopic<String, MeasurementToStation> topic = topicsRegistry.get(StreamType.MEASUREMENT_TO_STATION);
-        return builder.globalTable(topic.getName(), topic.consumed());
+    public GlobalKTable<String, SensorToStation> sensorToStationGlobalTable(TopicsRegistry topicsRegistry) {
+        AvroTopic<String, SensorToStation> topic = topicsRegistry.get(StreamType.SENSOR_TO_STATION);
+        return builder.globalTable(topic.getName(), topic.consumed(), topic.materialized());
     }
 
 }
