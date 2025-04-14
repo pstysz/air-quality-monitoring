@@ -1,16 +1,14 @@
 package com.pstysz.streamprocessor.utils;
 
-
+import com.pstysz.airquality.model.MeasuringStation;
 import com.pstysz.airquality.model.SensorMeasurement;
 import com.pstysz.airquality.model.SensorToStation;
-import com.pstysz.airquality.model.MeasuringStation;
 import com.pstysz.streamprocessor.domain.AvroTopic;
 import com.pstysz.streamprocessor.domain.StreamType;
 import com.pstysz.streamprocessor.domain.TopicsRegistry;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.springframework.context.annotation.Bean;
@@ -38,16 +36,9 @@ public class StreamTopologyBuilder {
         return builder.table(topic.getName(), topic.consumed(), topic.materialized());
     }
 
-    @Bean // stationId -> station info
-    public GlobalKTable<String, MeasuringStation> measuringStationGlobalTable(TopicsRegistry topicsRegistry) {
-        AvroTopic<String, MeasuringStation> topic = topicsRegistry.get(StreamType.STATION);
-        return builder.globalTable(topic.getName(), topic.consumed(), topic.materialized());
-    }
-
     @Bean // GlobalKTable: sensorId -> stationId
-    public GlobalKTable<String, SensorToStation> sensorToStationGlobalTable(TopicsRegistry topicsRegistry) {
+    public KTable<String, SensorToStation> sensorToStationTable(TopicsRegistry topicsRegistry) {
         AvroTopic<String, SensorToStation> topic = topicsRegistry.get(StreamType.SENSOR_TO_STATION);
-        return builder.globalTable(topic.getName(), topic.consumed(), topic.materialized());
+        return builder.table(topic.getName(), topic.consumed(), topic.materialized());
     }
-
 }

@@ -1,9 +1,6 @@
 package com.pstysz.streamprocessor.domain;
 
-import com.pstysz.airquality.model.SensorMeasurement;
-import com.pstysz.airquality.model.SensorToStation;
-import com.pstysz.airquality.model.MeasuringStation;
-import com.pstysz.airquality.model.SensorWithStationData;
+import com.pstysz.airquality.model.*;
 import lombok.Getter;
 import org.apache.avro.specific.SpecificRecord;
 
@@ -11,7 +8,10 @@ public enum StreamType {
     MEASUREMENT(String.class, SensorMeasurement.class, false),
     STATION(String.class, MeasuringStation.class, false),
     SENSOR_WITH_STATION_DATA(String.class, SensorWithStationData.class, true),
-    SENSOR_TO_STATION(String.class, SensorToStation.class, true);
+    SENSOR_TO_STATION(String.class, SensorToStation.class, true),
+    AGG_MEASUREMENT_5M(String.class, AggregatedMeasurement.class, true),
+    AGG_MEASUREMENT_1H(String.class, AggregatedMeasurement.class, true),
+    MEASUREMENT_TREND(String.class, MeasurementTrend.class, true);
 
     private final Class<?> keyClass;
     private final Class<? extends SpecificRecord> valueClass;

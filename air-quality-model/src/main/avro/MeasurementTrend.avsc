@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "namespace": "com.pstysz.airquality.model",
+  "name": "MeasurementTrend",
+  "fields": [
+    { "name": "sensorId", "type": "string" },
+    { "name": "windowStart", "type": "string" },
+    { "name": "windowEnd", "type": "string" },
+    { "name": "trend", "type": { "type": "enum", "name": "TrendType", "symbols": ["UP", "DOWN", "STABLE"] } },
+    { "name": "previousAvg", "type": "double" },
+    { "name": "currentAvg", "type": "double" }
+  ]
+}

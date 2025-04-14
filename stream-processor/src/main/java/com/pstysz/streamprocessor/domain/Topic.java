@@ -18,6 +18,10 @@ public class Topic<K, V> {
     private final Serde<K> keySerde;
     private final Serde<V> valueSerde;
 
+    public String storeName() {
+        return name + "-store";
+    }
+
     public Consumed<K, V> consumed() {
         return Consumed.with(keySerde, valueSerde);
     }
@@ -31,7 +35,13 @@ public class Topic<K, V> {
     }
 
     public Materialized<K, V, KeyValueStore<Bytes, byte[]>> materialized() {
-        return Materialized.<K, V, KeyValueStore<Bytes, byte[]>>as(name + "-store")
+        return Materialized.<K, V, KeyValueStore<Bytes, byte[]>>as(storeName())
+                .withKeySerde(keySerde)
+                .withValueSerde(valueSerde);
+    }
+
+    public Materialized<K, V, KeyValueStore<Bytes, byte[]>> materialized(String customStoreName) {
+        return Materialized.<K, V, KeyValueStore<Bytes, byte[]>>as(customStoreName)
                 .withKeySerde(keySerde)
                 .withValueSerde(valueSerde);
     }

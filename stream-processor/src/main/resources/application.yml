@@ -11,3 +11,6 @@ custom:
       measuring-stations: air-quality.measuring-stations
       sensor-with-station-data: air-quality.sensor-with-station-data
       sensor-to-station: air-quality.sensor-to-station
+      agg-measurement-5m: air-quality.agg-measurement-5m
+      agg-measurement-1h: air-quality.agg-measurement-1h
+      measurement-trend: air-quality.measurement-trend

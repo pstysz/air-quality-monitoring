@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "com.pstysz.airquality.model",
+  "name": "AggregatedMeasurement",
+  "fields": [
+    { "name": "sensorId", "type": "string" },
+    { "name": "windowStart", "type": "string" },
+    { "name": "windowEnd", "type": "string" },
+    { "name": "avgValue", "type": "double" },
+    { "name": "minValue", "type": "double" },
+    { "name": "maxValue", "type": "double" },
+    { "name": "count", "type": "long" },
+    { "name": "granularity", "type": "string" }
+  ]
+}
