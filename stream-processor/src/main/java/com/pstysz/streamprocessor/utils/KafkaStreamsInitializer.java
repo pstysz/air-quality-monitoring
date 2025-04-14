@@ -1,7 +1,6 @@
-package com.pstysz.streamprocessor;
+package com.pstysz.streamprocessor.utils;
 
 import com.pstysz.streamprocessor.config.KafkaStreamsConfig;
-import com.pstysz.streamprocessor.topology.MeasurementStreamTopology;
 import org.apache.kafka.streams.KafkaStreams;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class KafkaStreamsInitializer {
 
     @Bean
-    public KafkaStreams kafkaStreams(MeasurementStreamTopology topology, KafkaStreamsConfig config) {
+    public KafkaStreams kafkaStreams(StreamTopologyBuilder topology, KafkaStreamsConfig config) {
         return new KafkaStreams(topology.build(), config.getProps());
     }
 

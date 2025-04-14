@@ -29,4 +29,8 @@ public class KafkaStreamsConfig {
         this.props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
         this.props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
     }
+
+    public Object get(String key) {
+        return this.props.get(key);
+    }
 }

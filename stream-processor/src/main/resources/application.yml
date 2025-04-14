@@ -5,6 +5,9 @@ spring:
 custom:
   kafka:
     bootstrap-servers: kafka:9092
-    measurements-topic: air-quality.measurements
-    stations-topic: air-quality.stations
     schema-registry: http://schema-registry:8081
+    topics:
+      measurements: air-quality.measurements
+      stations: air-quality.stations
+      station-measurements: air-quality.station-measurements
+      measurement-to-station: air-quality.measurement-to-station

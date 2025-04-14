@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "com.pstysz.airquality.model",
+  "name": "MeasurementToStation",
+  "fields": [
+    {
+      "name": "sensorId",
+      "type": "string"
+    },
+    {
+      "name": "stationId",
+      "type": "string"
+    }
+  ]
+}
